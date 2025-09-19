@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>受取利息・受取配当金 仕訳自動表示ツール</title>
+<title>受取利息・受取配当金（法人） 仕訳自動表示ツール</title>
 <style>
   :root{ --brand:#578899; --bg:#f7fbfd; --chip-on:#ffffff; --chip-off:#e6eef2; }
   html,body{margin:0;padding:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;color:#222;background:var(--bg)}
@@ -34,17 +34,9 @@
 </head>
 <body>
 <div class="wrap">
-  <h1><span class="brand">松本会計</span><span class="tag">r2</span> 受取利息・受取配当金｜入金額→仕訳 自動表示ツール</h1>
+  <h1><span class="brand">松本会計</span><span class="tag">r3</span> 受取利息・受取配当金（法人）｜入金額→仕訳 自動表示</h1>
 
   <div class="card">
-    <div class="row">
-      <div class="label">対象</div>
-      <div class="chips">
-        <div class="chip"><input type="radio" name="entity" id="ent_corp" value="corp" checked><label for="ent_corp">法人</label></div>
-        <div class="chip"><input type="radio" name="entity" id="ent_sole" value="sole"><label for="ent_sole">個人事業主</label></div>
-      </div>
-    </div>
-
     <div class="row">
       <div class="label">種類</div>
       <div class="chips">
@@ -65,13 +57,12 @@
       <div class="label">入金額（手取）</div>
       <input class="money" id="net" inputmode="numeric" placeholder="例）64,000">
     </div>
-    <div class="hint">国内支払前提・源泉は各税額1円未満切捨てで逆算（最終値は明細に従いご確認ください）。</div>
+    <div class="hint">国内支払・法人前提。源泉は各税額1円未満切捨てで逆算（最終値は支払明細で確認）。</div>
 
     <div class="row">
       <div class="label">税率（自動）</div>
       <div class="grid" style="flex:1">
-        <div class="k">所得税・復興特別所得税</div><div class="v" id="rNat">—</div>
-        <div class="k">個人住民税（利子割／配当割）</div><div class="v" id="rLoc">—</div>
+        <div class="k">源泉（国税：所得税・復興特別所得税）</div><div class="v" id="rNat">—</div>
         <div class="k strong">合計源泉税率</div><div class="v strong" id="rTot">—</div>
       </div>
     </div>
@@ -81,7 +72,6 @@
     <div class="grid">
       <div class="k">源泉前総額（計上額）</div><div class="v strong" id="gross">—</div>
       <div class="k">源泉所得税等（国税）</div><div class="v" id="taxNat">—</div>
-      <div class="k">住民税（個人のみ）</div><div class="v" id="taxLoc">—</div>
       <div class="k">手取額（入金額）</div><div class="v" id="netOut">—</div>
     </div>
   </div>
@@ -93,20 +83,18 @@
       <button class="outline" id="copyBtn">仕訳をコピー</button>
       <button id="resetBtn">リセット</button>
     </div>
-    <div class="hint">※ご指定により源泉分の勘定科目は「租税公課または法人税等」で表示しています（個人事業主の処理方針は事務所基準に合わせて読み替え可）。</div>
+    <div class="hint">※源泉分の勘定科目はご指定どおり<strong>「租税公課または法人税等」</strong>で出力します。</div>
   </div>
 
   <div class="card footer">
     <div style="font-weight:700;margin-bottom:6px">根拠（主な税率・取扱）</div>
     <ul>
-      <li>配当の源泉（上場15.315%＋個人は配当割5%、非上場20.42%）：国税庁タックスアンサー No.1330  
+      <li>配当の源泉徴収（法人）：上場株式等は <strong>15.315%</strong>、非上場等は <strong>20.42%</strong>（いずれも国税、復興特別所得税を含む）。国税庁タックスアンサー No.1330  
         <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1330.htm">https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1330.htm</a></li>
-      <li>利子の源泉（15.315%＋個人は利子割5%）：国税庁タックスアンサー No.1310  
+      <li>利子の源泉徴収（法人）：<strong>15.315%</strong>（国税のみ）。国税庁タックスアンサー No.1310  
         <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1310.htm">https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1310.htm</a></li>
-      <li>配当割は個人課税（法人の上場配当には配当割なし）：東京都主税局  
-        <a href="https://www.tax.metro.tokyo.lg.jp/kazei/life/hi-kab">https://www.tax.metro.tokyo.lg.jp/kazei/life/hi-kab</a></li>
-      <li>法人の利子割（地方税5%）は2016/1/1以降 廃止（自治体告知例）：宮城県  
-        <a href="https://www.pref.miyagi.jp/soshiki/zeimu/houjinrishiwarihaishi.html">https://www.pref.miyagi.jp/soshiki/zeimu/houjinrishiwarihaishi.html</a> ／ 京都府  
+      <li>法人の利子割（地方税5%）は2016/1/1以降 廃止（＝法人の預金利息は地方税なし）。自治体告知例：宮城県・京都府  
+        <a href="https://www.pref.miyagi.jp/soshiki/zeimu/houjinrishiwarihaishi.html">https://www.pref.miyagi.jp/soshiki/zeimu/houjinrishiwarihaishi.html</a> ／ 
         <a href="https://www.pref.kyoto.jp/zeimu/risiwarihais.html">https://www.pref.kyoto.jp/zeimu/risiwarihais.html</a></li>
     </ul>
   </div>
@@ -119,11 +107,9 @@ const uncomma = s => (s||"").toString().replace(/[^\d]/g,"")*1;
 const els = {
   net: document.getElementById('net'),
   rNat: document.getElementById('rNat'),
-  rLoc: document.getElementById('rLoc'),
   rTot: document.getElementById('rTot'),
   gross: document.getElementById('gross'),
   taxNat: document.getElementById('taxNat'),
-  taxLoc: document.getElementById('taxLoc'),
   netOut: document.getElementById('netOut'),
   je: document.getElementById('je'),
   copyBtn: document.getElementById('copyBtn'),
@@ -131,110 +117,83 @@ const els = {
   divSubRow: document.getElementById('divSubRow'),
 };
 
-function getSel(name){ return document.querySelector(`input[name="${name}"]:checked`).value; }
+function getSel(name){ const el=document.querySelector(`input[name="${name}"]:checked`); return el?el.value:null; }
 
-function getRates(){
-  const entity = getSel('entity'); // corp or sole
+function getRate(){
   const itype = getSel('itype');   // interest or dividend
-  let rNat=0, rLoc=0, labelNat="", labelLoc="";
-  if(itype==='interest'){
-    rNat = 0.15315;
-    rLoc = (entity==='sole') ? 0.05 : 0.0; // 個人のみ利子割
-    labelNat = "15.315%";
-    labelLoc = (entity==='sole') ? "5%" : "—";
-  }else{
-    const dkind = getSel('divkind'); // listed/unlisted
-    if(dkind==='listed'){
-      rNat = 0.15315;
-      rLoc = (entity==='sole') ? 0.05 : 0.0; // 個人のみ配当割
-      labelNat = "15.315%";
-      labelLoc = (entity==='sole') ? "5%" : "—";
-    }else{
-      rNat = 0.2042;
-      rLoc = 0.0; // 非上場は地方税なし
-      labelNat = "20.42%";
-      labelLoc = "—";
-    }
-  }
-  return {rNat, rLoc, labelNat, labelLoc};
+  if(itype==='interest'){ return {rNat:0.15315, labelNat:"15.315%"}; }
+  const dkind = getSel('divkind'); // listed/unlisted
+  if(dkind==='listed'){ return {rNat:0.15315, labelNat:"15.315%"}; }
+  return {rNat:0.2042, labelNat:"20.42%"}; // unlisted
 }
 
-// 逆算：税額は各々1円未満切捨てでネット一致する総額を探索
-function reverseFromNet(net, rNat, rLoc){
+// 逆算（国税のみ）：税額は1円未満切捨てでネット一致する総額を探索
+function reverseFromNet(net, rNat){
   if(!(net>0)) return null;
-  const rTot = rNat + rLoc;
-  let g = Math.ceil(net / (1 - rTot));
+  let g = Math.ceil(net / (1 - rNat));
   for(let i=0;i<2000;i++){
     const tNat = Math.floor(g * rNat);
-    const tLoc = Math.floor(g * rLoc);
-    const calcNet = g - tNat - tLoc;
-    if(calcNet === net){ return {gross:g, tNat, tLoc, net:calcNet}; }
+    const calcNet = g - tNat;
+    if(calcNet === net){ return {gross:g, tNat, net:calcNet}; }
     if(calcNet > net){ g--; } else { g++; }
   }
   const tNat = Math.floor(g * rNat);
-  const tLoc = Math.floor(g * rLoc);
-  return {gross:g, tNat, tLoc, net:g - tNat - tLoc};
+  return {gross:g, tNat, net:g - tNat};
 }
 
 function update(){
+  // UI 切替（配当のみサブ区分表示）
   const itype = getSel('itype');
   els.divSubRow.style.display = (itype==='dividend') ? '' : 'none';
 
+  // 入力フォーマット（カンマ付）
   const raw = uncomma(els.net.value);
   els.net.value = raw ? raw.toLocaleString("ja-JP") : "";
 
-  const {rNat, rLoc, labelNat, labelLoc} = getRates();
-  const rTot = rNat + rLoc;
-
+  const {rNat, labelNat} = getRate();
   els.rNat.textContent = labelNat;
-  els.rLoc.textContent = labelLoc;
-  els.rTot.textContent = rTot ? (Math.round(rTot*100000)/1000).toFixed(3) + "%" : "—";
+  els.rTot.textContent = labelNat;
 
   if(!raw){
     els.gross.textContent = "—";
     els.taxNat.textContent = "—";
-    els.taxLoc.textContent = "—";
     els.netOut.textContent = "—";
     els.je.textContent = "入金額を入力すると自動表示します。";
     return;
   }
 
-  const rev = reverseFromNet(raw, rNat, rLoc);
+  const rev = reverseFromNet(raw, rNat);
   if(!rev){ return; }
 
   els.gross.textContent = "¥"+fmt(rev.gross);
   els.taxNat.textContent = "¥"+fmt(rev.tNat);
-  els.taxLoc.textContent = rLoc>0 ? ("¥"+fmt(rev.tLoc)) : "—";
   els.netOut.textContent = "¥"+fmt(rev.net);
 
-  const entity = getSel('entity');
-  const it = getSel('itype');
-  const dkind = (it==='dividend') ? getSel('divkind') : "";
-  const acctRev = (it==='interest') ? "受取利息" : "受取配当金";
+  const acctRev = (itype==='interest') ? "受取利息" : "受取配当金";
   const acctTax = "租税公課または法人税等";
   const acctBank = "普通預金";
-
-  const taxTotal = rev.tNat + rev.tLoc;
 
   let lines = [];
   lines.push(`【計算内訳】`);
   lines.push(`  源泉前総額 ${acctRev}: ¥${fmt(rev.gross)}`);
-  lines.push(`  源泉所得税等（国税）: ¥${fmt(rev.tNat)}${rNat?`（税率 ${Math.round(rNat*100000)/1000}%）`:""}`);
-  if(rLoc>0) lines.push(`  住民税（利子割/配当割）: ¥${fmt(rev.tLoc)}（税率 ${Math.round(rLoc*100000)/1000}%）`);
+  lines.push(`  源泉所得税等（国税）: ¥${fmt(rev.tNat)}（税率 ${labelNat}）`);
   lines.push(`  手取額（入金額）: ¥${fmt(rev.net)}\n`);
+
   lines.push(`【仕訳（例）】`);
   lines.push(`（借）${acctBank.padEnd(14,"　")} ¥${fmt(rev.net)}`);
-  if(taxTotal>0) lines.push(`（借）${acctTax.padEnd(14,"　")} ¥${fmt(taxTotal)}`);
+  if(rev.tNat>0) lines.push(`（借）${acctTax.padEnd(14,"　")} ¥${fmt(rev.tNat)}`);
   lines.push(`　　　（貸）${acctRev.padEnd(14,"　")} ¥${fmt(rev.gross)}\n`);
-  if(it==='dividend'){
+
+  if(itype==='dividend'){
     lines.push(`※税務メモ：法人の受取配当は区分・持株割合により益金不算入あり（法人税計算で調整）。`);
   }else{
     lines.push(`※メモ：法人の預金利息は2016/1/1以後、地方税（利子割）なし。`);
   }
+
   els.je.textContent = lines.join("\n");
 }
 
-document.querySelectorAll('input[name="entity"],input[name="itype"],input[name="divkind"]').forEach(el=>{
+document.querySelectorAll('input[name="itype"],input[name="divkind"]').forEach(el=>{
   el.addEventListener('change', update);
 });
 els.net.addEventListener('input', update);
@@ -248,7 +207,6 @@ els.copyBtn.addEventListener('click', async ()=>{
   }catch(e){ alert("コピーに失敗しました。"); }
 });
 els.resetBtn.addEventListener('click', ()=>{
-  document.getElementById('ent_corp').checked = true;
   document.getElementById('t_interest').checked = true;
   document.getElementById('div_listed').checked = true;
   els.net.value = "";
