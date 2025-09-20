@@ -7,7 +7,7 @@
 <style>
   :root{ --brand:#578899; --bg:#f7fbfd; --chip-on:#ffffff; --chip-off:#e6eef2; }
   html,body{margin:0;padding:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;color:#222;background:var(--bg)}
-  .wrap{max-width:720px;margin:0 auto;padding:16px 14px 96px} /* フッター固定分の余白 */
+  .wrap{max-width:720px;margin:0 auto;padding:16px 14px 28px} /* ← 下余白を通常に戻す */
   h1{font-size:18px;margin:2px 0 14px;color:#123;letter-spacing:.02em}
   .card{background:#fff;border:1px solid #dde6ea;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.03);padding:14px 12px;margin:10px 0}
   .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
@@ -31,13 +31,8 @@
   .brand{display:inline-block;padding:2px 8px;border-radius:6px;background:#578899;color:#fff;font-weight:700;margin-right:6px}
   .tag{display:inline-block;padding:2px 8px;border:1px solid #c9d7de;border-radius:6px;color:#345;background:#fff}
 
-  /* ご指定のフッター固定バー */
-  .credit-bar{
-    position:fixed;left:0;right:0;bottom:0;
-    background:#eef5f8;border-top:1px solid #d5e2e8;
-    padding:10px 12px; font-size:12px; color:#345; text-align:center;
-    overflow-wrap:anywhere; word-break:break-word;
-  }
+  /* 末尾フッター（固定しない） */
+  .credit-soft{font-size:12px;color:#345;text-align:center;padding:16px 12px 22px}
 </style>
 </head>
 <body>
@@ -106,11 +101,11 @@
         <a href="https://www.pref.kyoto.jp/zeimu/risiwarihais.html">https://www.pref.kyoto.jp/zeimu/risiwarihais.html</a></li>
     </ul>
   </div>
-</div>
 
-<!-- 固定フッター（ご指定の文言・r4で統一） -->
-<div class="credit-bar" aria-label="クレジット">
-  Copyright (c) 2025 税理士法人松本会計事務所 All Rights Reserved. / r4
+  <!-- 固定しない末尾フッター -->
+  <div class="credit-soft">
+    Copyright (c) 2025 税理士法人松本会計事務所 All Rights Reserved. / r4
+  </div>
 </div>
 
 <script>
