@@ -4,18 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>受取利息・受取配当金（法人） 仕訳自動表示ツール</title>
+<link rel="icon" type="image/png" sizes="192x192" href="favicon192192.png">
 <style>
-  :root{ --brand:#578899; --bg:#f7fbfd; --chip-on:#ffffff; --chip-off:#e6eef2; }
+  :root{ --brand:#578899; --bg:#f7fbfd; }
   html,body{margin:0;padding:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;color:#222;background:var(--bg)}
-  .wrap{max-width:720px;margin:0 auto;padding:16px 14px 28px} /* ← 下余白を通常に戻す */
-  h1{font-size:18px;margin:2px 0 14px;color:#123;letter-spacing:.02em}
+  .wrap{max-width:720px;margin:0 auto;padding:16px 14px 28px}
+
+  /* ヘッダー（ロゴ＋タイトル） */
+  .header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .header img.logo{height:48px;width:auto;display:block}
+  .header h1{font-size:18px;margin:0;color:#123;letter-spacing:.02em}
+
   .card{background:#fff;border:1px solid #dde6ea;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.03);padding:14px 12px;margin:10px 0}
   .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
   .label{font-size:13px;color:#345;min-width:6.5em}
   .chips{display:flex;gap:8px;flex-wrap:wrap}
   .chip input{display:none}
-  .chip label{display:inline-block;padding:8px 12px;border-radius:999px;border:1px solid #c9d7de;background:var(--chip-off);cursor:pointer;font-size:14px;color:#123;user-select:none}
-  .chip input:checked + label{background:var(--chip-on);border-color:var(--brand);box-shadow:0 0 0 2px rgba(87,136,153,.18) inset}
+  .chip label{display:inline-block;padding:8px 12px;border-radius:999px;border:1px solid #c9d7de;background:#e6eef2;cursor:pointer;font-size:14px;color:#123;user-select:none}
+  .chip input:checked + label{background:#fff;border-color:var(--brand);box-shadow:0 0 0 2px rgba(87,136,153,.18) inset}
   .money{flex:1;min-width:150px;padding:10px 12px;font-size:16px;border:1px solid #c9d7de;border-radius:10px;background:#fff}
   .hint{font-size:12px;color:#567;margin-top:2px}
   .grid{display:grid;grid-template-columns:1fr auto;gap:8px 10px;margin-top:6px}
@@ -28,16 +34,19 @@
   .jrnl{font-family:ui-monospace,Menlo,Consolas,"Noto Sans Mono CJK JP",monospace;font-size:14px;background:#fafcff;border:1px dashed #c9d7de;border-radius:10px;padding:10px 12px;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word}
   .footer{font-size:12px;color:#567;line-height:1.6;overflow-wrap:anywhere;word-break:break-word}
   .footer a{color:#245; text-underline-offset:2px}
-  .brand{display:inline-block;padding:2px 8px;border-radius:6px;background:#578899;color:#fff;font-weight:700;margin-right:6px}
-  .tag{display:inline-block;padding:2px 8px;border:1px solid #c9d7de;border-radius:6px;color:#345;background:#fff}
 
-  /* 末尾フッター（固定しない） */
+  /* 末尾クレジット（リンクは色変更せず下線のみ） */
   .credit-soft{font-size:12px;color:#345;text-align:center;padding:16px 12px 22px}
+  .credit-soft a{color:inherit;text-decoration:underline;text-underline-offset:2px}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1><span class="brand">松本会計</span><span class="tag">r4</span> 受取利息・受取配当金（法人）｜入金額→仕訳 自動表示</h1>
+  <!-- 左上ロゴ＋タイトル -->
+  <div class="header">
+    <img src="ロゴ.jpg" alt="税理士法人松本会計事務所 ロゴ" class="logo">
+    <h1>受取利息・受取配当金（法人）｜入金額→仕訳 自動表示</h1>
+  </div>
 
   <div class="card">
     <div class="row">
@@ -96,15 +105,15 @@
         <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1330.htm">https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1330.htm</a></li>
       <li>利子の源泉徴収（法人）：<strong>15.315%</strong>（国税のみ）。国税庁タックスアンサー No.1310  
         <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1310.htm">https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1310.htm</a></li>
-      <li>法人の利子割（地方税5%）は2016/1/1以降 廃止（＝法人の預金利息は地方税なし）。自治体告知例：宮城県・京都府  
+      <li>法人の利子割（地方税5%）は2016/1/1以降 廃止。自治体告知例：宮城県・京都府  
         <a href="https://www.pref.miyagi.jp/soshiki/zeimu/houjinrishiwarihaishi.html">https://www.pref.miyagi.jp/soshiki/zeimu/houjinrishiwarihaishi.html</a> ／ 
         <a href="https://www.pref.kyoto.jp/zeimu/risiwarihais.html">https://www.pref.kyoto.jp/zeimu/risiwarihais.html</a></li>
     </ul>
   </div>
 
-  <!-- 固定しない末尾フッター -->
+  <!-- 末尾クレジット（固定しない） -->
   <div class="credit-soft">
-    Copyright (c) 2025 税理士法人松本会計事務所 All Rights Reserved. / r4
+    Copyright (c) 2025 <a href="https://www.matsumoto-kaikei.or.jp/">税理士法人松本会計事務所</a> All Rights Reserved. / r4
   </div>
 </div>
 
@@ -151,7 +160,7 @@ function reverseFromNet(net, rNat){
 
 function update(){
   const itype = getSel('itype');
-  els.divSubRow.style.display = (itype==='dividend') ? '' : 'none';
+  document.getElementById('divSubRow').style.display = (itype==='dividend') ? '' : 'none';
 
   const raw = uncomma(els.net.value);
   els.net.value = raw ? raw.toLocaleString("ja-JP") : "";
@@ -205,18 +214,19 @@ document.querySelectorAll('input[name="itype"],input[name="divkind"]').forEach(e
 els.net.addEventListener('input', update);
 update();
 
-els.copyBtn.addEventListener('click', async ()=>{
-  try{
-    await navigator.clipboard.writeText(els.je.textContent);
-    els.copyBtn.textContent = "コピーしました";
-    setTimeout(()=>els.copyBtn.textContent="仕訳をコピー",1200);
-  }catch(e){ alert("コピーに失敗しました。"); }
-});
-els.resetBtn.addEventListener('click', ()=>{
+document.getElementById('resetBtn').addEventListener('click', ()=>{
   document.getElementById('t_interest').checked = true;
   document.getElementById('div_listed').checked = true;
   els.net.value = "";
   update();
+});
+
+document.getElementById('copyBtn').addEventListener('click', async ()=>{
+  try{
+    await navigator.clipboard.writeText(els.je.textContent);
+    document.getElementById('copyBtn').textContent = "コピーしました";
+    setTimeout(()=>document.getElementById('copyBtn').textContent="仕訳をコピー",1200);
+  }catch(e){ alert("コピーに失敗しました。"); }
 });
 </script>
 </body>
