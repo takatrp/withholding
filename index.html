@@ -18,11 +18,24 @@
   .card{background:#fff;border:1px solid #dde6ea;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.03);padding:14px 12px;margin:10px 0}
   .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
   .label{font-size:13px;color:#345;min-width:6.5em}
+
+  /* チップ（選択=太枠+濃色、非選択=無色） */
   .chips{display:flex;gap:8px;flex-wrap:wrap}
   .chip input{display:none}
-  .chip label{display:inline-block;padding:8px 12px;border-radius:999px;border:1px solid #c9d7de;background:#e6eef2;cursor:pointer;font-size:14px;color:#123;user-select:none}
-  .chip input:checked + label{background:#fff;border-color:var(--brand);box-shadow:0 0 0 2px rgba(87,136,153,.18) inset}
-  .money{flex:1;min-width:150px;padding:10px 12px;font-size:16px;border:1px solid #c9d7de;border-radius:10px;background:#fff}
+  .chip label{
+    display:inline-block;padding:8px 12px;border-radius:999px;border:1px solid #c9d7de;
+    background:#fff;cursor:pointer;font-size:14px;color:#123;user-select:none;transition:.12s;
+  }
+  .chip input:checked + label{
+    background:var(--brand);color:#fff;border-color:var(--brand);border-width:2px;font-weight:600;
+    box-shadow:0 1px 0 rgba(0,0,0,.05), 0 0 0 2px rgba(87,136,153,.15);
+  }
+  .chip label:active{transform:translateY(1px)}
+
+  .money{
+    flex:1;min-width:150px;padding:10px 12px;font-size:16px;border:1px solid #c9d7de;border-radius:10px;background:#fff
+  }
+  .money::placeholder{color:#b8c4cc} /* ← 例）64,000 をより薄く */
   .hint{font-size:12px;color:#567;margin-top:2px}
   .grid{display:grid;grid-template-columns:1fr auto;gap:8px 10px;margin-top:6px}
   .k{color:#456}
@@ -35,16 +48,18 @@
   .footer{font-size:12px;color:#567;line-height:1.6;overflow-wrap:anywhere;word-break:break-word}
   .footer a{color:#245; text-underline-offset:2px}
 
-  /* 末尾クレジット（リンクは色変更せず下線のみ） */
+  /* 末尾クレジット（固定しない） */
   .credit-soft{font-size:12px;color:#345;text-align:center;padding:16px 12px 22px}
   .credit-soft a{color:inherit;text-decoration:underline;text-underline-offset:2px}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <!-- 左上ロゴ＋タイトル -->
+  <!-- 左上ロゴ＋タイトル（ロゴにリンク） -->
   <div class="header">
-    <img src="ロゴ.jpg" alt="税理士法人松本会計事務所 ロゴ" class="logo">
+    <a href="https://www.matsumoto-kaikei.or.jp/" aria-label="税理士法人松本会計事務所 公式サイト">
+      <img src="ロゴ.jpg" alt="税理士法人松本会計事務所 ロゴ" class="logo">
+    </a>
     <h1>受取利息・受取配当金（法人）｜入金額→仕訳 自動表示</h1>
   </div>
 
@@ -111,7 +126,7 @@
     </ul>
   </div>
 
-  <!-- 末尾クレジット（固定しない） -->
+  <!-- 末尾クレジット -->
   <div class="credit-soft">
     Copyright (c) 2025 <a href="https://www.matsumoto-kaikei.or.jp/">税理士法人松本会計事務所</a> All Rights Reserved. / r4
   </div>
