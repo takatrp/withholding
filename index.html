@@ -10,6 +10,7 @@
   html,body{margin:0;padding:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;color:#222;background:var(--bg)}
   .wrap{max-width:720px;margin:0 auto;padding:16px 14px 28px}
 
+  /* ヘッダー（ロゴ＋タイトル） */
   .header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
   .header img.logo{height:48px;width:auto;display:block}
   .header h1{font-size:18px;margin:0;color:#123;letter-spacing:.02em}
@@ -18,7 +19,7 @@
   .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
   .label{font-size:13px;color:#345;min-width:6.5em}
 
-  /* チップ：選択=太枠+濃色、非選択=無色 */
+  /* チップ（選択=太枠+濃色、非選択=無色） */
   .chips{display:flex;gap:8px;flex-wrap:wrap}
   .chip input{display:none}
   .chip label{
@@ -32,7 +33,7 @@
   .chip label:active{transform:translateY(1px)}
 
   .money{flex:1;min-width:150px;padding:10px 12px;font-size:16px;border:1px solid #c9d7de;border-radius:10px;background:#fff}
-  .money::placeholder{color:#b8c4cc}
+  .money::placeholder{color:#b8c4cc} /* プレースホルダーを薄く */
   .hint{font-size:12px;color:#567;margin-top:2px}
   .grid{display:grid;grid-template-columns:1fr auto;gap:8px 10px;margin-top:6px}
   .k{color:#456}
@@ -45,9 +46,12 @@
   .footer{font-size:12px;color:#567;line-height:1.6;overflow-wrap:anywhere;word-break:break-word}
   .footer a{color:#245; text-underline-offset:2px}
 
-  /* 末尾クレジット（固定しない） */
-  .credit-soft{font-size:12px;color:#345;text-align:center;padding:16px 12px 22px}
-  .credit-soft a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+  /* ミニフッター（1行・色継承＋下線） */
+  .mk-mini{
+    max-width:720px;margin:0 auto;padding:14px 12px 24px;
+    font-size:12px; color:#345; text-align:center;
+  }
+  .mk-mini a{color:inherit;text-decoration:underline;text-underline-offset:2px}
 </style>
 </head>
 <body>
@@ -122,16 +126,23 @@
         <a href="https://www.pref.kyoto.jp/zeimu/risiwarihais.html">https://www.pref.kyoto.jp/zeimu/risiwarihais.html</a></li>
     </ul>
   </div>
-
-  <div class="credit-soft">
-    Copyright (c) 2025 <a href="https://www.matsumoto-kaikei.or.jp/">税理士法人松本会計事務所</a> All Rights Reserved. / r4
-  </div>
 </div>
 
+<!-- ミニフッター：© 年 事務所名 ｜ CC ｜ 利用条件 ｜ r4（最終更新日） -->
+<footer class="mk-mini">
+  © <span id="cpy-year">2025</span>
+  <a href="https://www.matsumoto-kaikei.or.jp/" target="_blank" rel="noopener license">税理士法人松本会計事務所</a> ｜ 
+  <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="license noopener">CC BY-NC-SA 4.0</a> ｜ 
+  <a href="/tool-portal/terms.html" target="_blank" rel="noopener">利用条件</a> ｜ 
+  <span id="build-rev">r4</span>（<span id="last-updated-date"></span>）
+</footer>
+
 <script>
+/* 表示整形 */
 const fmt = n => isNaN(n) ? "—" : n.toLocaleString("ja-JP",{maximumFractionDigits:0});
 const uncomma = s => (s||"").toString().replace(/[^\d]/g,"")*1;
 
+/* DOM参照 */
 const els = {
   net: document.getElementById('net'),
   rNat: document.getElementById('rNat'),
@@ -143,10 +154,13 @@ const els = {
   copyBtn: document.getElementById('copyBtn'),
   resetBtn: document.getElementById('resetBtn'),
   divSubRow: document.getElementById('divSubRow'),
+  cpyYear: document.getElementById('cpy-year'),
+  lastUpdated: document.getElementById('last-updated-date'),
+  buildRev: document.getElementById('build-rev'),
 };
 
+/* 税率判定 */
 function getSel(name){ const el=document.querySelector(`input[name="${name}"]:checked`); return el?el.value:null; }
-
 function getRate(){
   const itype = getSel('itype');   // interest or dividend
   if(itype==='interest'){ return {rNat:0.15315, labelNat:"15.315%"}; }
@@ -155,7 +169,7 @@ function getRate(){
   return {rNat:0.2042, labelNat:"20.42%"}; // unlisted
 }
 
-// 逆算（国税のみ）
+/* 逆算（国税のみ） */
 function reverseFromNet(net, rNat){
   if(!(net>0)) return null;
   let g = Math.ceil(net / (1 - rNat));
@@ -169,9 +183,10 @@ function reverseFromNet(net, rNat){
   return {gross:g, tNat, net:g - tNat};
 }
 
+/* 画面更新 */
 function update(){
   const itype = getSel('itype');
-  document.getElementById('divSubRow').style.display = (itype==='dividend') ? '' : 'none';
+  els.divSubRow.style.display = (itype==='dividend') ? '' : 'none';
 
   const raw = uncomma(els.net.value);
   els.net.value = raw ? raw.toLocaleString("ja-JP") : "";
@@ -211,7 +226,6 @@ function update(){
   lines.push(`【仕訳（例）】`);
   lines.push(`（借）${acctBank.padEnd(14,"　")} ¥${fmt(rev.net)}`);
   if(rev.tNat>0) lines.push(`（借）${acctTax.padEnd(14,"　")} ¥${fmt(rev.tNat)}`);
-  // ← 貸方の勘定科目名の後に課税区分を明記
   lines.push(`　　　（貸）${acctRev}${taxNote} ¥${fmt(rev.gross)}\n`);
 
   if(itype==='dividend'){
@@ -223,19 +237,17 @@ function update(){
   els.je.textContent = lines.join("\n");
 }
 
+/* イベント */
 document.querySelectorAll('input[name="itype"],input[name="divkind"]').forEach(el=>{
   el.addEventListener('change', update);
 });
 els.net.addEventListener('input', update);
-update();
-
 document.getElementById('resetBtn').addEventListener('click', ()=>{
   document.getElementById('t_interest').checked = true;
   document.getElementById('div_listed').checked = true;
   els.net.value = "";
   update();
 });
-
 document.getElementById('copyBtn').addEventListener('click', async ()=>{
   try{
     await navigator.clipboard.writeText(els.je.textContent);
@@ -243,6 +255,31 @@ document.getElementById('copyBtn').addEventListener('click', async ()=>{
     setTimeout(()=>document.getElementById('copyBtn').textContent="仕訳をコピー",1200);
   }catch(e){ alert("コピーに失敗しました。"); }
 });
+
+/* ---- フッター：年号・最終更新日の自動表示 ---- */
+(function(){
+  // 年号
+  try{
+    els.cpyYear.textContent = String(new Date().getFullYear());
+  }catch(_){/* noop */}
+
+  // 最終更新日（document.lastModified -> YYYY-MM-DD）
+  try{
+    const lm = new Date(document.lastModified);
+    const y = lm.getFullYear();
+    const m = String(lm.getMonth()+1).padStart(2,'0');
+    const d = String(lm.getDate()).padStart(2,'0');
+    els.lastUpdated.textContent = `${y}-${m}-${d}`;
+  }catch(_){
+    els.lastUpdated.textContent = '';
+  }
+
+  // ビルド番号（r4固定。将来の自動化に備えてDOM経由）
+  els.buildRev.textContent = 'r4';
+})();
+
+/* 初期描画 */
+update();
 </script>
 </body>
 </html>
