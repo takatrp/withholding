@@ -6,14 +6,16 @@
 <title>受取利息・受取配当金（法人） 仕訳自動表示ツール</title>
 <link rel="icon" type="image/png" sizes="192x192" href="favicon192192.png">
 <style>
-  :root{ --brand:#578899; --bg:#f7fbfd; }
+  :root{ --brand:#578899; --bg:#f7fbfd; --focus:#91b7c4; }
   html,body{margin:0;padding:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;color:#222;background:var(--bg)}
   .wrap{max-width:720px;margin:0 auto;padding:16px 14px 28px}
 
   /* ヘッダー（ロゴ＋タイトル） */
   .header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
   .header img.logo{height:48px;width:auto;display:block}
-  .header h1{font-size:18px;margin:0;color:#123;letter-spacing:.02em}
+  .header h1{font-size:18px;margin:0;color:#123;letter-spacing:.02em;flex:1}
+  .header .help-btn{appearance:none;border:1px solid var(--brand);background:#fff;color:var(--brand);
+    border-radius:999px;padding:8px 12px;font-size:13px;cursor:pointer}
 
   .card{background:#fff;border:1px solid #dde6ea;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.03);padding:14px 12px;margin:10px 0}
   .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
@@ -33,7 +35,7 @@
   .chip label:active{transform:translateY(1px)}
 
   .money{flex:1;min-width:150px;padding:10px 12px;font-size:16px;border:1px solid #c9d7de;border-radius:10px;background:#fff}
-  .money::placeholder{color:#b8c4cc} /* プレースホルダーを薄く */
+  .money::placeholder{color:#b8c4cc}
   .hint{font-size:12px;color:#567;margin-top:2px}
   .grid{display:grid;grid-template-columns:1fr auto;gap:8px 10px;margin-top:6px}
   .k{color:#456}
@@ -46,6 +48,28 @@
   .footer{font-size:12px;color:#567;line-height:1.6;overflow-wrap:anywhere;word-break:break-word}
   .footer a{color:#245; text-underline-offset:2px}
 
+  /* 使い方（他ツール準拠：カード＋展開/モーダル） */
+  details.tutorial summary{cursor:pointer;list-style:none}
+  details.tutorial summary::-webkit-details-marker{display:none}
+  details.tutorial .tips{font-size:13px;color:#334;margin-top:8px;line-height:1.7}
+  .mini-list{padding-left:1em;margin:6px 0}
+  .mini-list li{margin:.25em 0}
+
+  /* ツアーモーダル */
+  .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;z-index:999}
+  .modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(640px,92vw);
+    background:#fff;border-radius:12px;border:1px solid #d9e4ea;box-shadow:0 10px 30px rgba(0,0,0,.15);
+    padding:16px 14px;display:none;z-index:1000}
+  .modal h2{font-size:16px;margin:0 0 8px;color:#123}
+  .modal .body{font-size:14px;color:#334;line-height:1.7}
+  .modal .nav{display:flex;justify-content:space-between;gap:8px;margin-top:12px}
+  .modal .nav .left{display:flex;gap:8px}
+  .modal .nav button{padding:8px 12px;font-size:13px;border-radius:10px}
+  .badge{display:inline-block;font-size:11px;background:#eef4f6;border:1px solid #d7e3e8;border-radius:999px;padding:2px 8px;margin-left:6px}
+
+  /* ハイライト（ツアー時） */
+  .highlight{outline:3px solid var(--focus); outline-offset:2px; border-radius:10px; transition:outline .2s}
+
   /* ミニフッター（1行・色継承＋下線） */
   .mk-mini{
     max-width:720px;margin:0 auto;padding:14px 12px 24px;
@@ -56,18 +80,39 @@
 </head>
 <body>
 <div class="wrap">
-  <!-- ロゴは公式サイトへリンク -->
+  <!-- ヘッダー（ロゴに公式サイトリンク／右に使い方ボタン） -->
   <div class="header">
     <a href="https://www.matsumoto-kaikei.or.jp/" aria-label="税理士法人松本会計事務所 公式サイト">
       <img src="ロゴ.jpg" alt="税理士法人松本会計事務所 ロゴ" class="logo">
     </a>
     <h1>受取利息・受取配当金（法人）｜入金額→仕訳 自動表示</h1>
+    <button class="help-btn" id="openTutorial">使い方</button>
   </div>
 
-  <div class="card">
+  <!-- 使い方（常設カード：他ツールと同様の折りたたみ） -->
+  <details class="card tutorial" id="tutorialDetails">
+    <summary><strong>このツールの使い方</strong><span class="badge">チュートリアル</span></summary>
+    <div class="tips">
+      <ol class="mini-list">
+        <li><strong>種類</strong>で「受取利息」または「受取配当金」を選びます。配当の場合は<strong>配当区分</strong>（上場／非上場）も選択。</li>
+        <li><strong>入金額（手取）</strong>に明細どおりの金額を入力します（カンマ可）。<em>各税額は1円未満切捨てで逆算</em>します。</li>
+        <li>源泉前総額・源泉税額（国税）・仕訳例が<strong>自動表示</strong>されます。貸方には<strong>課税区分</strong>を明記。</li>
+        <li>「<strong>仕訳をコピー</strong>」でテキストをクリップボードへ。</li>
+        <li>下部の<strong>根拠</strong>リンクを参照して税率・取り扱いを確認してください。</li>
+      </ol>
+      <div class="btns">
+        <button class="outline" id="startTour">ステップツアーを開始</button>
+        <button id="demoFill">デモ入力</button>
+      </div>
+      <div class="hint">※外国支払・特定口座（源泉徴収あり）・配当控除・益金不算入などの個別論点は申告計算で調整してください。</div>
+    </div>
+  </details>
+
+  <!-- 入力カード群 -->
+  <div class="card" id="cardType">
     <div class="row">
       <div class="label">種類</div>
-      <div class="chips">
+      <div class="chips" id="chipType">
         <div class="chip"><input type="radio" name="itype" id="t_interest" value="interest" checked><label for="t_interest">受取利息</label></div>
         <div class="chip"><input type="radio" name="itype" id="t_div" value="dividend"><label for="t_div">受取配当金</label></div>
       </div>
@@ -75,13 +120,13 @@
 
     <div class="row" id="divSubRow" style="display:none">
       <div class="label">配当区分</div>
-      <div class="chips">
+      <div class="chips" id="chipDivKind">
         <div class="chip"><input type="radio" name="divkind" id="div_listed" value="listed" checked><label for="div_listed">上場株式等</label></div>
         <div class="chip"><input type="radio" name="divkind" id="div_unlisted" value="unlisted"><label for="div_unlisted">非上場等</label></div>
       </div>
     </div>
 
-    <div class="row">
+    <div class="row" id="rowNet">
       <div class="label">入金額（手取）</div>
       <input class="money" id="net" inputmode="numeric" placeholder="例）64,000">
     </div>
@@ -96,7 +141,7 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card" id="cardCalc">
     <div class="grid">
       <div class="k">源泉前総額（計上額）</div><div class="v strong" id="gross">—</div>
       <div class="k">源泉所得税等（国税）</div><div class="v" id="taxNat">—</div>
@@ -104,7 +149,7 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card" id="cardJE">
     <div class="row" style="margin-top:0"><div class="label">仕訳（例）</div></div>
     <div class="jrnl" id="je">入金額を入力すると自動表示します。</div>
     <div class="btns">
@@ -114,7 +159,7 @@
     <div class="hint">※源泉分の勘定科目は<strong>「租税公課または法人税等」</strong>で出力します。</div>
   </div>
 
-  <div class="card footer">
+  <div class="card footer" id="cardRefs">
     <div style="font-weight:700;margin-bottom:6px">根拠（主な税率・取扱）</div>
     <ul>
       <li>配当の源泉徴収（法人）：上場株式等は <strong>15.315%</strong>、非上場等は <strong>20.42%</strong>（いずれも国税、復興特別所得税を含む）。国税庁タックスアンサー No.1330  
@@ -137,6 +182,20 @@
   <span id="build-rev">r4</span>（<span id="last-updated-date"></span>）
 </footer>
 
+<!-- ツアーモーダル -->
+<div class="backdrop" id="tourBackdrop" aria-hidden="true"></div>
+<div class="modal" id="tourModal" role="dialog" aria-modal="true" aria-labelledby="tourTitle">
+  <h2 id="tourTitle">ステップツアー</h2>
+  <div class="body" id="tourBody">このツールの基本的な使い方を順にご案内します。</div>
+  <div class="nav">
+    <div class="left">
+      <button class="outline" id="tourPrev" disabled>戻る</button>
+      <button class="outline" id="tourNext">次へ</button>
+    </div>
+    <button id="tourClose">閉じる</button>
+  </div>
+</div>
+
 <script>
 /* 表示整形 */
 const fmt = n => isNaN(n) ? "—" : n.toLocaleString("ja-JP",{maximumFractionDigits:0});
@@ -157,6 +216,25 @@ const els = {
   cpyYear: document.getElementById('cpy-year'),
   lastUpdated: document.getElementById('last-updated-date'),
   buildRev: document.getElementById('build-rev'),
+  // tutorial
+  openTutorial: document.getElementById('openTutorial'),
+  startTour: document.getElementById('startTour'),
+  demoFill: document.getElementById('demoFill'),
+  tourBackdrop: document.getElementById('tourBackdrop'),
+  tourModal: document.getElementById('tourModal'),
+  tourBody: document.getElementById('tourBody'),
+  tourPrev: document.getElementById('tourPrev'),
+  tourNext: document.getElementById('tourNext'),
+  tourClose: document.getElementById('tourClose'),
+  tutorialDetails: document.getElementById('tutorialDetails'),
+  // highlight targets
+  cardType: document.getElementById('cardType'),
+  chipType: document.getElementById('chipType'),
+  chipDivKind: document.getElementById('chipDivKind'),
+  rowNet: document.getElementById('rowNet'),
+  cardCalc: document.getElementById('cardCalc'),
+  cardJE: document.getElementById('cardJE'),
+  cardRefs: document.getElementById('cardRefs'),
 };
 
 /* 税率判定 */
@@ -237,6 +315,50 @@ function update(){
   els.je.textContent = lines.join("\n");
 }
 
+/* ---- チュートリアル（他ツール準拠：カード＋モーダル＋ステップツアー） ---- */
+const tourSteps = [
+  { el: () => els.cardType, text: "① 種類を選びます（受取利息／受取配当金）。配当の場合は配当区分も選択します。" },
+  { el: () => els.rowNet, text: "② 入金額（手取）を入力します。カンマ入力OK。各税額は1円未満切捨てで逆算します。" },
+  { el: () => els.cardCalc, text: "③ 源泉前総額・源泉所得税等（国税）が自動計算されます。" },
+  { el: () => els.cardJE, text: "④ 仕訳（例）が表示されます。貸方に課税区分（利息=3/非課税売上、配当=0/対象外）を明記します。［仕訳をコピー］で転記に便利です。" },
+  { el: () => els.cardRefs, text: "⑤ 根拠リンクから税率・取扱いの確認が可能です。実務では支払明細を最優先してください。" }
+];
+let tourIdx = 0, lastHL = null;
+function openModal(){ els.tourBackdrop.style.display='block'; els.tourModal.style.display='block'; }
+function closeModal(){ els.tourBackdrop.style.display='none'; els.tourModal.style.display='none'; clearHL(); }
+function clearHL(){ if(lastHL){ lastHL.classList.remove('highlight'); lastHL=null; } }
+function showStep(idx){
+  clearHL();
+  const step = tourSteps[idx];
+  const node = step.el();
+  if(node){ node.classList.add('highlight'); lastHL = node; node.scrollIntoView({behavior:'smooth',block:'center'}); }
+  els.tourBody.textContent = step.text;
+  els.tourPrev.disabled = idx===0;
+  els.tourNext.textContent = (idx===tourSteps.length-1)?'完了':'次へ';
+}
+els.openTutorial.addEventListener('click', ()=>{
+  // 折りたたみを開く（カード表示→モーダル）
+  if(!els.tutorialDetails.open) els.tutorialDetails.open = true;
+  openModal(); tourIdx=0; showStep(tourIdx);
+});
+els.startTour.addEventListener('click', ()=>{ openModal(); tourIdx=0; showStep(tourIdx); });
+els.tourPrev.addEventListener('click', ()=>{ if(tourIdx>0){ tourIdx--; showStep(tourIdx); }});
+els.tourNext.addEventListener('click', ()=>{
+  if(tourIdx<tourSteps.length-1){ tourIdx++; showStep(tourIdx); }
+  else { closeModal(); }
+});
+els.tourClose.addEventListener('click', closeModal);
+els.tourBackdrop.addEventListener('click', closeModal);
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+
+/* デモ入力 */
+els.demoFill.addEventListener('click', ()=>{
+  document.getElementById('t_div').checked = true;
+  document.getElementById('div_listed').checked = true;
+  els.net.value = "64,000";
+  update();
+});
+
 /* イベント */
 document.querySelectorAll('input[name="itype"],input[name="divkind"]').forEach(el=>{
   el.addEventListener('change', update);
@@ -258,23 +380,12 @@ document.getElementById('copyBtn').addEventListener('click', async ()=>{
 
 /* ---- フッター：年号・最終更新日の自動表示 ---- */
 (function(){
-  // 年号
-  try{
-    els.cpyYear.textContent = String(new Date().getFullYear());
-  }catch(_){/* noop */}
-
-  // 最終更新日（document.lastModified -> YYYY-MM-DD）
+  try{ els.cpyYear.textContent = String(new Date().getFullYear()); }catch(_){}
   try{
     const lm = new Date(document.lastModified);
-    const y = lm.getFullYear();
-    const m = String(lm.getMonth()+1).padStart(2,'0');
-    const d = String(lm.getDate()).padStart(2,'0');
+    const y = lm.getFullYear(), m = String(lm.getMonth()+1).padStart(2,'0'), d = String(lm.getDate()).padStart(2,'0');
     els.lastUpdated.textContent = `${y}-${m}-${d}`;
-  }catch(_){
-    els.lastUpdated.textContent = '';
-  }
-
-  // ビルド番号（r4固定。将来の自動化に備えてDOM経由）
+  }catch(_){ els.lastUpdated.textContent=''; }
   els.buildRev.textContent = 'r4';
 })();
 
