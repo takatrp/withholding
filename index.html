@@ -1,4 +1,7 @@
 <!doctype html>
+<!-- internal version: r5
+  - 左上ロゴのリンク先をツールポータルに変更
+-->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -58,7 +61,7 @@
 <div class="wrap">
   <!-- ロゴは公式サイトへリンク -->
   <div class="header">
-    <a href="https://www.matsumoto-kaikei.or.jp/" aria-label="税理士法人松本会計事務所 公式サイト">
+    <a href="https://takatrp.github.io/tool-portal/" aria-label="税理士法人松本会計事務所 公式サイト">
       <img src="ロゴ.jpg" alt="税理士法人松本会計事務所 ロゴ" class="logo">
     </a>
     <h1>受取利息・受取配当金（法人）｜入金額→仕訳 自動表示</h1>
@@ -128,13 +131,13 @@
   </div>
 </div>
 
-<!-- ミニフッター：© 年 事務所名 ｜ CC ｜ 利用条件 ｜ r4（最終更新日） -->
+<!-- ミニフッター：© 年 事務所名 ｜ CC ｜ 利用条件 ｜ r5（最終更新日） -->
 <footer class="mk-mini">
   © <span id="cpy-year">2025</span>
   <a href="https://www.matsumoto-kaikei.or.jp/" target="_blank" rel="noopener license">税理士法人松本会計事務所</a> ｜ 
   <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="license noopener">CC BY-NC-SA 4.0</a> ｜ 
   <a href="/tool-portal/terms.html" target="_blank" rel="noopener">利用条件</a> ｜ 
-  <span id="build-rev">r4</span>（<span id="last-updated-date"></span>）
+  <span id="build-rev">r5</span>（<span id="last-updated-date"></span>）
 </footer>
 
 <script>
@@ -274,8 +277,8 @@ document.getElementById('copyBtn').addEventListener('click', async ()=>{
     els.lastUpdated.textContent = '';
   }
 
-  // ビルド番号（r4固定。将来の自動化に備えてDOM経由）
-  els.buildRev.textContent = 'r4';
+  // ビルド番号（r5固定。将来の自動化に備えてDOM経由）
+  els.buildRev.textContent = 'r5';
 })();
 
 /* 初期描画 */
