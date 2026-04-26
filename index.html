@@ -1,6 +1,7 @@
 <!doctype html>
-<!-- internal version: r5
+<!-- internal version: r6
   - 左上ロゴのリンク先をツールポータルに変更
+  - 利子の源泉徴収の根拠を「令和8年版 源泉徴収のあらまし」第7 利子所得の源泉徴収事務PDFに変更
 -->
 <html lang="ja">
 <head>
@@ -122,8 +123,8 @@
     <ul>
       <li>配当の源泉徴収（法人）：上場株式等は <strong>15.315%</strong>、非上場等は <strong>20.42%</strong>（いずれも国税、復興特別所得税を含む）。国税庁タックスアンサー No.1330  
         <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1330.htm">https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1330.htm</a></li>
-      <li>利子の源泉徴収（法人）：<strong>15.315%</strong>（国税のみ）。国税庁タックスアンサー No.1310  
-        <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1310.htm">https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1310.htm</a></li>
+      <li>利子の源泉徴収（法人）：<strong>15.315%</strong>（国税のみ）。国税庁「令和8年版 源泉徴収のあらまし」第7 利子所得の源泉徴収事務  
+        <a href="https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/09.pdf">https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/09.pdf</a></li>
       <li>法人の利子割（地方税5%）は2016/1/1以降 廃止。自治体告知例：宮城県・京都府  
         <a href="https://www.pref.miyagi.jp/soshiki/zeimu/houjinrishiwarihaishi.html">https://www.pref.miyagi.jp/soshiki/zeimu/houjinrishiwarihaishi.html</a> ／ 
         <a href="https://www.pref.kyoto.jp/zeimu/risiwarihais.html">https://www.pref.kyoto.jp/zeimu/risiwarihais.html</a></li>
@@ -131,13 +132,13 @@
   </div>
 </div>
 
-<!-- ミニフッター：© 年 事務所名 ｜ CC ｜ 利用条件 ｜ r5（最終更新日） -->
+<!-- ミニフッター：© 年 事務所名 ｜ CC ｜ 利用条件 ｜ r6（最終更新日） -->
 <footer class="mk-mini">
   © <span id="cpy-year">2025</span>
   <a href="https://www.matsumoto-kaikei.or.jp/" target="_blank" rel="noopener license">税理士法人松本会計事務所</a> ｜ 
   <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="license noopener">CC BY-NC-SA 4.0</a> ｜ 
   <a href="/tool-portal/terms.html" target="_blank" rel="noopener">利用条件</a> ｜ 
-  <span id="build-rev">r5</span>（<span id="last-updated-date"></span>）
+  <span id="build-rev">r6</span>（<span id="last-updated-date"></span>）
 </footer>
 
 <script>
@@ -277,8 +278,8 @@ document.getElementById('copyBtn').addEventListener('click', async ()=>{
     els.lastUpdated.textContent = '';
   }
 
-  // ビルド番号（r5固定。将来の自動化に備えてDOM経由）
-  els.buildRev.textContent = 'r5';
+  // ビルド番号（r6固定。将来の自動化に備えてDOM経由）
+  els.buildRev.textContent = 'r6';
 })();
 
 /* 初期描画 */
